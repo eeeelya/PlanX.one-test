@@ -64,7 +64,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
             "categories",
             "transactions",
         )
-        read_only_fields = ("balance", )
 
 
 class LoginSerializer(serializers.ModelSerializer):
