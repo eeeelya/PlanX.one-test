@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     "rest_framework",
     "djoser",
-    "drf_yasg"
+    "drf_yasg",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -178,8 +179,6 @@ SIMPLE_JWT = {
 
 DJOSER = {
     "SERIALIZERS": {
-        "user": "user.serializers.UserSerializer",
-        "current_user": "user.serializers.UserSerializer",
         "user_create": "user.serializers.UserSerializer",
     },
 }
