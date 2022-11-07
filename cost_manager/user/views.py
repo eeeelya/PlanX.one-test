@@ -23,7 +23,10 @@ class UserInfoViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return User.objects.filter(is_active=True)
+        if self.request.user.is_superuser:
+            return User.objects.filter(is_active=True)
+
+        return User.objects.filter(id=self.request.user.id, is_active=True)
 
 
 class LoginView(APIView):
@@ -31,6 +34,9 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid()
         response = Response()
+
+        if not serializer.data:
+            return Response({"data": "Bad request."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(username=serializer.data["username"], password=serializer.data["password"])
 
@@ -49,7 +55,4 @@ class LoginView(APIView):
 
             return response
         else:
-            return Response(
-                {"Invalid": "Invalid username or password!!"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return Response({"data": "Invalid credentials."}, status=status.HTTP_404_NOT_FOUND)

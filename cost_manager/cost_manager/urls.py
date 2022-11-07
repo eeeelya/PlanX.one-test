@@ -21,5 +21,7 @@ from cost_manager.yasg import urlpatterns as doc_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("api/v1/", include("user.urls"))
+    path("api/v1/", include("user.urls")),
+    path("api/v1/", include("category.urls")),
+    path("api/v1/", include("transaction.urls")),
 ] + doc_urls

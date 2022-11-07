@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from user.models import User, UserCategories
+from user.models import User
 from category.models import Category
 
 
@@ -11,6 +11,20 @@ class UserSerializer(serializers.ModelSerializer):
     )
     password = serializers.CharField(write_only=True, required=True)
     confirmation_password = serializers.CharField(write_only=True, required=True)
+
+    DEFAULT_CATEGORIES = (
+        "Забота о себе",
+        "Зарплата",
+        "Здоровье и фитнес",
+        "Кафе и рестораны",
+        "Машина",
+        "Образование",
+        "Отдых и развлечения",
+        "Платежи, комиссии",
+        "Покупки: одежда, техника",
+        "Продукты",
+        "Проезд",
+    )
 
     class Meta:
         model = User
@@ -42,11 +56,11 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         user.set_password(validated_data["password"])
-        user.save()
 
-        categories = Category.objects.filter(custom=False)
-        for category in categories:
-            UserCategories.objects.create(user=user, category=category)
+        for category in self.DEFAULT_CATEGORIES:
+            Category.objects.create(user=user, name=category)
+
+        user.save()
 
         return user
 
@@ -61,10 +75,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "balance",
-            "categories",
-            "transactions",
         )
-        read_only_fields = ("balance", )
 
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -74,6 +85,4 @@ class LoginSerializer(serializers.ModelSerializer):
             "username",
             "password",
         )
-        extra_kwargs = {
-            "password": {"write_only": True}
-        }
+        extra_kwargs = {"password": {"write_only": True}}
