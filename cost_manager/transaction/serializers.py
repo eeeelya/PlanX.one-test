@@ -44,7 +44,11 @@ class TransactionSerializer(serializers.ModelSerializer):
         category.total_amount = F("total_amount") + validated_data["amount"]
         category.save()
 
-        user.balance = F("balance") - validated_data["amount"]
+        if validated_data["category_name"] == "Зарплата":
+            user.balance = F("balance") + validated_data["amount"]
+        else:
+            user.balance = F("balance") + validated_data["amount"]
+
         user.save()
 
         return transaction
